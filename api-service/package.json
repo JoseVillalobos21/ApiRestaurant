@@ -1,0 +1,15 @@
+{
+  "name": "api-service",
+  "version": "1.0.0",
+  "description": "API Service validating Database access per Role",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "pg": "^8.11.0",
+    "cors": "^2.8.5"
+  }
+}

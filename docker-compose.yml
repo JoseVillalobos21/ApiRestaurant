@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: restaurante_db
+    environment:
+      POSTGRES_USER: rest_admin
+      POSTGRES_PASSWORD: rest_password
+      POSTGRES_DB: restaurante
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - rest-network
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth_service
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - JWT_SECRET=super_secret_jwt_key_restaurante
+      - DB_USER=rest_admin
+      - DB_PASS=rest_password
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=restaurante
+    depends_on:
+      - db
+    networks:
+      - rest-network
+
+  api-service:
+    build: ./api-service
+    container_name: api_service
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - JWT_SECRET=super_secret_jwt_key_restaurante
+      - DB_USER=rest_admin
+      - DB_PASS=rest_password
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=restaurante
+    depends_on:
+      - db
+    networks:
+      - rest-network
+
+networks:
+  rest-network:
+    driver: bridge
